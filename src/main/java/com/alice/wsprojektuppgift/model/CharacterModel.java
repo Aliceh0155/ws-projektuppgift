@@ -1,9 +1,17 @@
 package com.alice.wsprojektuppgift.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "characters")
 public class CharacterModel {
 
+    @Id
     private String id;
+
     private String name;
     private String species;
     private String gender;
@@ -14,6 +22,7 @@ public class CharacterModel {
     private String ancestry;
     private String eyeColour;
     private String hairColour;
+    @ManyToOne
     private Wand wand;
     private boolean hogwartsStudent;
     private boolean alive;
