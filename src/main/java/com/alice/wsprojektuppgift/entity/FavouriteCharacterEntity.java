@@ -1,6 +1,14 @@
-package com.alice.wsprojektuppgift.model;
+package com.alice.wsprojektuppgift.entity;
 
-public class CharacterModel {
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "favourite_character")
+public class FavouriteCharacterEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long databaseId;
 
     private String id;
     private String name;
@@ -13,9 +21,38 @@ public class CharacterModel {
     private String ancestry;
     private String eyeColour;
     private String hairColour;
-    private Wand wand;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private WandEntity wand;
     private boolean hogwartsStudent;
     private boolean alive;
+
+    public FavouriteCharacterEntity() {
+    }
+
+    public FavouriteCharacterEntity(String id, String name, String species, String gender, String house, String dateOfBirth, int yearOfBirth, boolean wizard, String ancestry, String eyeColour, String hairColour, WandEntity wand, boolean hogwartsStudent, boolean alive) {
+        this.id = id;
+        this.name = name;
+        this.species = species;
+        this.gender = gender;
+        this.house = house;
+        this.dateOfBirth = dateOfBirth;
+        this.yearOfBirth = yearOfBirth;
+        this.wizard = wizard;
+        this.ancestry = ancestry;
+        this.eyeColour = eyeColour;
+        this.hairColour = hairColour;
+        this.wand = wand;
+        this.hogwartsStudent = hogwartsStudent;
+        this.alive = alive;
+    }
+
+    public Long getDatabaseId() {
+        return databaseId;
+    }
+
+    public void setDatabaseId(Long databaseId) {
+        this.databaseId = databaseId;
+    }
 
     public String getId() {
         return id;
@@ -105,11 +142,11 @@ public class CharacterModel {
         this.hairColour = hairColour;
     }
 
-    public Wand getWand() {
+    public WandEntity getWand() {
         return wand;
     }
 
-    public void setWand(Wand wand) {
+    public void setWand(WandEntity wand) {
         this.wand = wand;
     }
 
@@ -129,3 +166,4 @@ public class CharacterModel {
         this.alive = alive;
     }
 }
+

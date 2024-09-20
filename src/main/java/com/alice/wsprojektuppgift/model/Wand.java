@@ -1,13 +1,6 @@
 package com.alice.wsprojektuppgift.model;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "wand")
 public class Wand {
-    @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
-    private Long id;
 
     private String wood;
     private String core;
@@ -36,5 +29,4 @@ public class Wand {
     public void setLength(double length) {
         this.length = length;
     }
-
 }
