@@ -25,11 +25,13 @@ public class FavouriteCharacterEntity {
     private WandEntity wand;
     private boolean hogwartsStudent;
     private boolean alive;
+    private String image;
 
     public FavouriteCharacterEntity() {
     }
 
-    public FavouriteCharacterEntity(String id, String name, String species, String gender, String house, String dateOfBirth, int yearOfBirth, boolean wizard, String ancestry, String eyeColour, String hairColour, WandEntity wand, boolean hogwartsStudent, boolean alive) {
+    public FavouriteCharacterEntity(String image, String id, String name, String species, String gender, String house, String dateOfBirth, int yearOfBirth, boolean wizard, String ancestry, String eyeColour, String hairColour, WandEntity wand, boolean hogwartsStudent, boolean alive) {
+        this.image = image;
         this.id = id;
         this.name = name;
         this.species = species;
@@ -44,6 +46,14 @@ public class FavouriteCharacterEntity {
         this.wand = wand;
         this.hogwartsStudent = hogwartsStudent;
         this.alive = alive;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public Long getDatabaseId() {
