@@ -27,8 +27,7 @@ public class FavouriteCharacterEntity {
     private boolean alive;
     private String image;
 
-    public FavouriteCharacterEntity() {
-    }
+    public FavouriteCharacterEntity() {}
 
     public FavouriteCharacterEntity(String image, String id, String name, String species, String gender, String house, String dateOfBirth, int yearOfBirth, boolean wizard, String ancestry, String eyeColour, String hairColour, WandEntity wand, boolean hogwartsStudent, boolean alive) {
         this.image = image;

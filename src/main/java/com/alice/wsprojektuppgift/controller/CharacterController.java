@@ -1,40 +1,39 @@
 package com.alice.wsprojektuppgift.controller;
 
-
 import com.alice.wsprojektuppgift.entity.FavouriteCharacterEntity;
 import com.alice.wsprojektuppgift.model.CharacterModel;
-import com.alice.wsprojektuppgift.repository.FavouriteCharacterRepository;
+import com.alice.wsprojektuppgift.service.CharacterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class CharacterController {
 
-    private final FavouriteCharacterRepository favouriteCharacterRepository;
+
     private final WebClient hpwebClient;
+    private final CharacterService characterService;
 
     @Autowired
-    public CharacterController(FavouriteCharacterRepository favouriteCharacterRepository, WebClient.Builder webClient) {
-        this.favouriteCharacterRepository = favouriteCharacterRepository;
+    public CharacterController(WebClient.Builder webClient, CharacterService characterService) {
+
         this.hpwebClient = webClient
                 .baseUrl("https://hp-api.herokuapp.com/api")
                 .build();
+        this.characterService = characterService;
     }
 
     @GetMapping("/allCharacters")
-    public Mono<List<CharacterModel>> getAllCharacters() {
+    public ResponseEntity<Mono<List<CharacterModel>>> getAllCharacters() {
 
-        return hpwebClient.get()
+        return ResponseEntity.ok(hpwebClient.get()
                 .uri("/characters")
                 .retrieve()
                 .bodyToFlux(CharacterModel.class)
-                .collectList();
+                .collectList());
     }
 
 
@@ -50,33 +49,39 @@ public class CharacterController {
 
     @PostMapping("/addCharacter")
     public ResponseEntity<FavouriteCharacterEntity> addCharacter(@RequestBody FavouriteCharacterEntity favouriteCharacterEntity) {
-
-        return ResponseEntity.status(201).body(favouriteCharacterRepository.save(favouriteCharacterEntity));
+        FavouriteCharacterEntity savedCharacter = characterService.addCharacter(favouriteCharacterEntity);
+        return ResponseEntity.status(200).body(savedCharacter);
     }
 
     @PutMapping("/updateImage/{id}")
-    public ResponseEntity<FavouriteCharacterEntity> updateImage(@PathVariable ("id") Long id, @RequestBody String newImage) {
-
-        Optional<FavouriteCharacterEntity> character = favouriteCharacterRepository.findById(id);
-
-        if (character.isPresent()) {
-            character.get().setImage(newImage);
-            favouriteCharacterRepository.save(character.get());
-            return ResponseEntity.status(200).body(character.get());
+    public ResponseEntity<FavouriteCharacterEntity> updateImage(@PathVariable Long id, @RequestBody String newImage) {
+        FavouriteCharacterEntity updatedCharacter = characterService.updateImage(id, newImage);
+        if (updatedCharacter != null) {
+            return ResponseEntity.status(200).body(updatedCharacter);
         }
-
         return ResponseEntity.notFound().build();
     }
+
 
     @DeleteMapping("/deleteCharacter/{id}")
-    public ResponseEntity<FavouriteCharacterEntity> deleteCharacter(@PathVariable ("id") Long id) {
-
-        Optional<FavouriteCharacterEntity> character = favouriteCharacterRepository.findById(id);
-        if (character.isPresent()) {
-            favouriteCharacterRepository.delete(character.get());
-            return ResponseEntity.status(200).body(character.get());
+    public ResponseEntity<FavouriteCharacterEntity> deleteCharacter(@PathVariable("id") Long id) {
+        FavouriteCharacterEntity deletedCharacter = characterService.deleteCharacter(id);
+        if (deletedCharacter != null) {
+            return ResponseEntity.status(200).body(deletedCharacter);
         }
         return ResponseEntity.notFound().build();
     }
+
+
+    @GetMapping("/getFavourites")
+    public ResponseEntity<List<FavouriteCharacterEntity>> getFavourites() {
+        List<FavouriteCharacterEntity> favourites = characterService.getFavourites();
+
+        if (favourites.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(favourites);
+    }
+
 
 }
