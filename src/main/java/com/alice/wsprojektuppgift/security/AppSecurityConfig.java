@@ -1,5 +1,6 @@
 package com.alice.wsprojektuppgift.security;
 
+import com.alice.wsprojektuppgift.authorities.UserRole;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,14 +20,9 @@ public class AppSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers ("/","/login").permitAll()
-//                        .anyRequest()
-//                        .authenticated())
-//                .csrf(AbstractHttpConfigurer::disable);
-
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login").permitAll()
+                        .requestMatchers("allCharacters").hasRole(UserRole.USER.name())
                         .anyRequest()
                         .authenticated()
                 )
@@ -41,7 +37,7 @@ public class AppSecurityConfig {
                 User.withDefaultPasswordEncoder ()
                         .username("Alice")
                         .password("123")
-                        .roles("USER")
+                        .authorities(UserRole.USER.getAuthorities())
                         .build();
         return new InMemoryUserDetailsManager(user);
     }
