@@ -1,4 +1,4 @@
-package com.alice.wsprojektuppgift.security;
+package com.alice.wsprojektuppgift.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +10,8 @@ public class AppPasswordConfig {
 
     @Bean
     public PasswordEncoder bcryptPasswordEncoder() {
+        System.out.println("TEST");
+        System.out.println("JAG ÄR BEANEN");
         return new BCryptPasswordEncoder(15);
     }
 }

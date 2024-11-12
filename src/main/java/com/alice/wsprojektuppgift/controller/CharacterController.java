@@ -11,6 +11,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 // @PreAuthorize
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 public class CharacterController {
 
@@ -68,7 +69,7 @@ public class CharacterController {
     public ResponseEntity<FavouriteCharacterEntity> deleteCharacter(@PathVariable("id") Long id) {
         FavouriteCharacterEntity deletedCharacter = characterService.deleteCharacter(id);
         if (deletedCharacter != null) {
-            return ResponseEntity.status(200).body(deletedCharacter);
+            return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
     }
