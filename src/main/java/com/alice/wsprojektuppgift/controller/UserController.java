@@ -20,6 +20,9 @@ public class UserController {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
+
+
+
     @GetMapping("/test")
     public String test() {
 

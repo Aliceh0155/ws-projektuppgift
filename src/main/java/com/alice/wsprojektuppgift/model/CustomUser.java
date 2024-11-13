@@ -3,8 +3,6 @@ package com.alice.wsprojektuppgift.model;
 import com.alice.wsprojektuppgift.authorities.UserRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
@@ -16,12 +14,8 @@ public class CustomUser {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotBlank
-    @Size(min = 2, max = 32)
     private String username;
 
-    @NotBlank
-    @Size(min = 3, max = 64)
     private String password;
 
     @Enumerated(EnumType.STRING)
