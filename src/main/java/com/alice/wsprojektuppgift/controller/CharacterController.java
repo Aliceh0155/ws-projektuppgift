@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 // @PreAuthorize
-@CrossOrigin(origins = "http://localhost:5173")
+//@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 public class CharacterController {
 
