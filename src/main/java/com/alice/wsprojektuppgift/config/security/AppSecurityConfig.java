@@ -1,6 +1,8 @@
 package com.alice.wsprojektuppgift.config.security;
 
 import com.alice.wsprojektuppgift.authorities.UserRole;
+import com.alice.wsprojektuppgift.config.JwtAuthFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -10,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -18,6 +21,13 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class AppSecurityConfig {
 
+
+    private final JwtAuthFilter jwtAuthFilter;
+
+    @Autowired
+    public AppSecurityConfig(JwtAuthFilter jwtAuthFilter) {
+        this.jwtAuthFilter = jwtAuthFilter;
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -40,7 +50,7 @@ public class AppSecurityConfig {
                         .authenticated()
                 )
 
-                .formLogin(withDefaults());
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

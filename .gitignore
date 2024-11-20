@@ -38,5 +38,3 @@ out/
 
 # Ignore application.properties
 src/main/resources/application.properties
-
-jwt.secret=5dc90d97a0255a09e88e479dd59a64d10712ec9f735cc607884423ddc8c47aaac63e29548bb06a68b63ecd67516e25d8a976505e8f7efaf838162d76e909c176
