@@ -1,6 +1,6 @@
 package com.alice.wsprojektuppgift.config.security;
 
-import com.alice.wsprojektuppgift.model.CustomUser;
+import com.alice.wsprojektuppgift.entity.CustomUser;
 import com.alice.wsprojektuppgift.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

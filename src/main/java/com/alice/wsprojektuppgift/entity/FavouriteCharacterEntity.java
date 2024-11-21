@@ -1,16 +1,16 @@
 package com.alice.wsprojektuppgift.entity;
 
-import jakarta.persistence.*;
 
-@Entity
-@Table(name = "favourite_character")
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "favourite_character")
 public class FavouriteCharacterEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long databaseId;
+    private String mongoId; // MongoDB:s unika ID
 
-    private String id;
+    private String apiId; // ID från API:et
     private String name;
     private String species;
     private String gender;
@@ -21,7 +21,6 @@ public class FavouriteCharacterEntity {
     private String ancestry;
     private String eyeColour;
     private String hairColour;
-    @ManyToOne(cascade = CascadeType.ALL)
     private WandEntity wand;
     private boolean hogwartsStudent;
     private boolean alive;
@@ -29,9 +28,8 @@ public class FavouriteCharacterEntity {
 
     public FavouriteCharacterEntity() {}
 
-    public FavouriteCharacterEntity(String image, String id, String name, String species, String gender, String house, String dateOfBirth, int yearOfBirth, boolean wizard, String ancestry, String eyeColour, String hairColour, WandEntity wand, boolean hogwartsStudent, boolean alive) {
-        this.image = image;
-        this.id = id;
+    public FavouriteCharacterEntity(String apiId, String name, String species, String gender, String house, String dateOfBirth, int yearOfBirth, boolean wizard, String ancestry, String eyeColour, String hairColour, WandEntity wand, boolean hogwartsStudent, boolean alive, String image) {
+        this.apiId = apiId;
         this.name = name;
         this.species = species;
         this.gender = gender;
@@ -45,30 +43,16 @@ public class FavouriteCharacterEntity {
         this.wand = wand;
         this.hogwartsStudent = hogwartsStudent;
         this.alive = alive;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
         this.image = image;
     }
 
-    public Long getDatabaseId() {
-        return databaseId;
+
+    public String getApiId() {
+        return apiId;
     }
 
-    public void setDatabaseId(Long databaseId) {
-        this.databaseId = databaseId;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public void setApiId(String apiId) {
+        this.apiId = apiId;
     }
 
     public String getName() {
@@ -173,6 +157,14 @@ public class FavouriteCharacterEntity {
 
     public void setAlive(boolean alive) {
         this.alive = alive;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }
 

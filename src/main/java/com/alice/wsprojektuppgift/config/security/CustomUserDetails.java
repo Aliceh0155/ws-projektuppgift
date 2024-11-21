@@ -1,6 +1,6 @@
 package com.alice.wsprojektuppgift.config.security;
 
-import com.alice.wsprojektuppgift.model.CustomUser;
+import com.alice.wsprojektuppgift.entity.CustomUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

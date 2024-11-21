@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -49,14 +50,17 @@ public class CharacterController {
                 .collectList());
     }
 
+
     @PostMapping("/addCharacter")
     public ResponseEntity<FavouriteCharacterEntity> addCharacter(@RequestBody FavouriteCharacterEntity favouriteCharacterEntity) {
         FavouriteCharacterEntity savedCharacter = characterService.addCharacter(favouriteCharacterEntity);
         return ResponseEntity.status(200).body(savedCharacter);
     }
 
+
+
     @PutMapping("/updateImage/{id}")
-    public ResponseEntity<FavouriteCharacterEntity> updateImage(@PathVariable Long id, @RequestBody String newImage) {
+    public ResponseEntity<FavouriteCharacterEntity> updateImage(@PathVariable String id, @RequestBody String newImage) {
         FavouriteCharacterEntity updatedCharacter = characterService.updateImage(id, newImage);
         if (updatedCharacter != null) {
             return ResponseEntity.status(200).body(updatedCharacter);
@@ -66,7 +70,7 @@ public class CharacterController {
 
 
     @DeleteMapping("/deleteCharacter/{id}")
-    public ResponseEntity<FavouriteCharacterEntity> deleteCharacter(@PathVariable("id") Long id) {
+    public ResponseEntity<FavouriteCharacterEntity> deleteCharacter(@PathVariable("id") String id) {
         FavouriteCharacterEntity deletedCharacter = characterService.deleteCharacter(id);
         if (deletedCharacter != null) {
             return ResponseEntity.noContent().build();

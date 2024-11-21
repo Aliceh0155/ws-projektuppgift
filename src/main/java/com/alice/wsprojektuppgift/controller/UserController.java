@@ -2,7 +2,7 @@ package com.alice.wsprojektuppgift.controller;
 
 import com.alice.wsprojektuppgift.authorities.UserRole;
 import com.alice.wsprojektuppgift.config.security.JwtUtil;
-import com.alice.wsprojektuppgift.model.CustomUser;
+import com.alice.wsprojektuppgift.entity.CustomUser;
 import com.alice.wsprojektuppgift.model.dto.CustomUserDTO;
 import com.alice.wsprojektuppgift.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -94,6 +94,7 @@ public class UserController {
         );
         return userRepository.save(customUser);
     }
+
     @GetMapping("/test")
     public String test() {
 

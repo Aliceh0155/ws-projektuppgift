@@ -1,29 +1,31 @@
-package com.alice.wsprojektuppgift.model;
+package com.alice.wsprojektuppgift.entity;
 
 import com.alice.wsprojektuppgift.authorities.UserRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Document(collection = "users")
 public class CustomUser {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
     private String username;
 
     private String password;
 
-    @Enumerated(EnumType.STRING)
     private UserRole userRole;
     private boolean isAccountNonExpired;
     private boolean isAccountNonLocked;
     private boolean isCredentialsNonExpired;
     private boolean isEnabled;
+
+    // Lista av favoritkaraktärer (referenser till FavouriteCharacterEntity)
+    @DBRef
+    private List<FavouriteCharacterEntity> favouriteCharacters = new ArrayList<>();
 
     public CustomUser() {
     }
@@ -38,9 +40,6 @@ public class CustomUser {
         this.isEnabled = isEnabled;
     }
 
-    public Long getId() {
-        return id;
-    }
 
     public String getUsername() {
         return username;
@@ -97,9 +96,7 @@ public class CustomUser {
         return isCredentialsNonExpired;
     }
 
-    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
-        isCredentialsNonExpired = credentialsNonExpired;
-    }
+    public void setCredentialsNonExpired(boolean credentialsNonExpired) {isCredentialsNonExpired = credentialsNonExpired;}
 
     public boolean isEnabled() {
         return isEnabled;
@@ -107,5 +104,13 @@ public class CustomUser {
 
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+    }
+
+    public List<FavouriteCharacterEntity> getFavouriteCharacters() {
+        return favouriteCharacters;
+    }
+
+    public void setFavouriteCharacters(List<FavouriteCharacterEntity> favouriteCharacters) {
+        this.favouriteCharacters = favouriteCharacters;
     }
 }

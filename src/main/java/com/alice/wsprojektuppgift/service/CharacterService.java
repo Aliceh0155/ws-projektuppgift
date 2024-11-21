@@ -20,20 +20,22 @@ public class CharacterService {
     }
 
     public FavouriteCharacterEntity addCharacter(FavouriteCharacterEntity characterEntity) {
-        return favouriteCharacterRepository.save(characterEntity);
+        return favouriteCharacterRepository.save(characterEntity);  // Synkron version
     }
 
-    public FavouriteCharacterEntity updateImage(Long id, String newImage) {
-        Optional<FavouriteCharacterEntity> character = favouriteCharacterRepository.findById(id);
-        if (character.isPresent()) {
-            FavouriteCharacterEntity characterEntity = character.get();
-            characterEntity.setImage(newImage);
-            return favouriteCharacterRepository.save(characterEntity);
-        }
-        throw new NoSuchElementException("Character with id " + id + " not found");
+
+    public FavouriteCharacterEntity updateImage(String id, String newImage) {
+        FavouriteCharacterEntity character = favouriteCharacterRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Character with id " + id + " not found"));
+
+        character.setImage(newImage);
+        return favouriteCharacterRepository.save(character);
     }
 
-    public FavouriteCharacterEntity deleteCharacter(Long id) {
+
+
+
+    public FavouriteCharacterEntity deleteCharacter(String id) {
         Optional<FavouriteCharacterEntity> character = favouriteCharacterRepository.findById(id);
         if (character.isPresent()) {
             favouriteCharacterRepository.delete(character.get());
@@ -41,6 +43,8 @@ public class CharacterService {
         }
         throw new NoSuchElementException("Character with id " + id + " not found");
     }
+
+
 
     public List<FavouriteCharacterEntity> getFavourites() {
 
