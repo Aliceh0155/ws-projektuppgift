@@ -10,12 +10,12 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
-public class CharacterService {
+public class CharacterDBService {
 
     private final FavouriteCharacterRepository favouriteCharacterRepository;
 
     @Autowired
-    public CharacterService(FavouriteCharacterRepository favouriteCharacterRepository) {
+    public CharacterDBService(FavouriteCharacterRepository favouriteCharacterRepository) {
         this.favouriteCharacterRepository = favouriteCharacterRepository;
     }
 

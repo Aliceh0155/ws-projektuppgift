@@ -2,13 +2,11 @@ package com.alice.wsprojektuppgift.controller;
 
 import com.alice.wsprojektuppgift.entity.FavouriteCharacterEntity;
 import com.alice.wsprojektuppgift.model.CharacterModel;
-import com.alice.wsprojektuppgift.service.CharacterService;
+import com.alice.wsprojektuppgift.service.CharacterApiService;
+import com.alice.wsprojektuppgift.service.CharacterDBService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 // @PreAuthorize
@@ -17,43 +15,52 @@ import java.util.List;
 public class CharacterController {
 
 
-    private final WebClient hpwebClient;
-    private final CharacterService characterService;
+    private final CharacterApiService characterApiService;
+    private final CharacterDBService characterDBService;
 
     @Autowired
-    public CharacterController(WebClient.Builder webClient, CharacterService characterService) {
-
-        this.hpwebClient = webClient
-                .baseUrl("https://hp-api.herokuapp.com/api")
-                .build();
-        this.characterService = characterService;
+    public CharacterController(CharacterApiService characterApiService, CharacterDBService characterDBService) {
+        this.characterApiService = characterApiService;
+        this.characterDBService = characterDBService;
     }
 
     @GetMapping("/allCharacters")
-    public ResponseEntity<Mono<List<CharacterModel>>> getAllCharacters() {
-
-        return ResponseEntity.ok(hpwebClient.get()
-                .uri("/characters")
-                .retrieve()
-                .bodyToFlux(CharacterModel.class)
-                .collectList());
+    public ResponseEntity<List<CharacterModel>> getAllCharacters() {
+        List<CharacterModel> characters = characterApiService.getAllCharacters();
+        return ResponseEntity.ok(characters);
     }
-
 
     @GetMapping("/characterByHouse/{house}")
-    public ResponseEntity<Mono<List<CharacterModel>>> getCharacterByHouse(@PathVariable String house) {
-
-        return ResponseEntity.ok(hpwebClient.get()
-                .uri("/characters/house/{house}", house)
-                .retrieve()
-                .bodyToFlux(CharacterModel.class)
-                .collectList());
+    public ResponseEntity<List<CharacterModel>> getCharacterByHouse(@PathVariable String house) {
+        List<CharacterModel> characters = characterApiService.getCharactersByHouse(house);
+        return ResponseEntity.ok(characters);
     }
+
+//    @GetMapping("/allCharacters")
+//    public ResponseEntity<Mono<List<CharacterModel>>> getAllCharacters() {
+//
+//        return ResponseEntity.ok(hpwebClient.get()
+//                .uri("/characters")
+//                .retrieve()
+//                .bodyToFlux(CharacterModel.class)
+//                .collectList());
+//    }
+//
+//
+//    @GetMapping("/characterByHouse/{house}")
+//    public ResponseEntity<Mono<List<CharacterModel>>> getCharacterByHouse(@PathVariable String house) {
+//
+//        return ResponseEntity.ok(hpwebClient.get()
+//                .uri("/characters/house/{house}", house)
+//                .retrieve()
+//                .bodyToFlux(CharacterModel.class)
+//                .collectList());
+//    }
 
 
     @PostMapping("/addCharacter")
     public ResponseEntity<FavouriteCharacterEntity> addCharacter(@RequestBody FavouriteCharacterEntity favouriteCharacterEntity) {
-        FavouriteCharacterEntity savedCharacter = characterService.addCharacter(favouriteCharacterEntity);
+        FavouriteCharacterEntity savedCharacter = characterDBService.addCharacter(favouriteCharacterEntity);
         return ResponseEntity.status(200).body(savedCharacter);
     }
 
@@ -61,7 +68,7 @@ public class CharacterController {
 
     @PutMapping("/updateImage/{id}")
     public ResponseEntity<FavouriteCharacterEntity> updateImage(@PathVariable String id, @RequestBody String newImage) {
-        FavouriteCharacterEntity updatedCharacter = characterService.updateImage(id, newImage);
+        FavouriteCharacterEntity updatedCharacter = characterDBService.updateImage(id, newImage);
         if (updatedCharacter != null) {
             return ResponseEntity.status(200).body(updatedCharacter);
         }
@@ -71,7 +78,7 @@ public class CharacterController {
 
     @DeleteMapping("/deleteCharacter/{id}")
     public ResponseEntity<FavouriteCharacterEntity> deleteCharacter(@PathVariable("id") String id) {
-        FavouriteCharacterEntity deletedCharacter = characterService.deleteCharacter(id);
+        FavouriteCharacterEntity deletedCharacter = characterDBService.deleteCharacter(id);
         if (deletedCharacter != null) {
             return ResponseEntity.noContent().build();
         }
@@ -81,7 +88,7 @@ public class CharacterController {
 
     @GetMapping("/getFavourites")
     public ResponseEntity<List<FavouriteCharacterEntity>> getFavourites() {
-        List<FavouriteCharacterEntity> favourites = characterService.getFavourites();
+        List<FavouriteCharacterEntity> favourites = characterDBService.getFavourites();
 
         if (favourites.isEmpty()) {
             return ResponseEntity.noContent().build();
