@@ -2,6 +2,7 @@ package com.alice.wsprojektuppgift.entity;
 
 import com.alice.wsprojektuppgift.authorities.UserRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,6 +13,8 @@ import java.util.List;
 @Document(collection = "users")
 public class CustomUser {
 
+    @Id
+    private String mongoId;
 
     private String username;
 
@@ -40,6 +43,9 @@ public class CustomUser {
         this.isEnabled = isEnabled;
     }
 
+    public String getMongoId() {
+        return mongoId;
+    }
 
     public String getUsername() {
         return username;

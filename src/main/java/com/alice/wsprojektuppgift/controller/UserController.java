@@ -4,8 +4,8 @@ import com.alice.wsprojektuppgift.authorities.UserRole;
 import com.alice.wsprojektuppgift.config.security.JwtUtil;
 import com.alice.wsprojektuppgift.entity.CustomUser;
 import com.alice.wsprojektuppgift.model.dto.CustomUserDTO;
-import com.alice.wsprojektuppgift.repository.UserRepository;
 import jakarta.validation.Valid;
+import com.alice.wsprojektuppgift.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final IUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, AuthenticationManager authenticationManager) {
+    public UserController(IUserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;

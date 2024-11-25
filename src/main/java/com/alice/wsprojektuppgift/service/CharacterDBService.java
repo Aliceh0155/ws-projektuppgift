@@ -1,8 +1,7 @@
 package com.alice.wsprojektuppgift.service;
 
 import com.alice.wsprojektuppgift.entity.FavouriteCharacterEntity;
-import com.alice.wsprojektuppgift.repository.FavouriteCharacterRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.alice.wsprojektuppgift.repository.IFavouriteCharacterRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,10 +11,9 @@ import java.util.Optional;
 @Service
 public class CharacterDBService {
 
-    private final FavouriteCharacterRepository favouriteCharacterRepository;
+   private final IFavouriteCharacterRepository favouriteCharacterRepository;
 
-    @Autowired
-    public CharacterDBService(FavouriteCharacterRepository favouriteCharacterRepository) {
+    public CharacterDBService(IFavouriteCharacterRepository favouriteCharacterRepository) {
         this.favouriteCharacterRepository = favouriteCharacterRepository;
     }
 

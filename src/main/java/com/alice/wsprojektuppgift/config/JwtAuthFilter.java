@@ -28,6 +28,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        String requestPath = request.getRequestURI();
+
+        // Skippa validering för specifika endpoints
+        if (isPermitAllEndpoint(requestPath)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String token = request.getHeader("Authorization");
 
         if (token == null || !token.startsWith("Bearer ")) {
@@ -51,6 +59,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
+    }
+    private boolean isPermitAllEndpoint(String path) {
+        // Lägg till alla endpoints som ska vara tillåtna utan autentisering
+        return path.equals("/register") ||
+                path.equals("/login") ||
+                path.equals("/allCharacters") ||
+                path.equals("/createDefaultUser");
     }
 
 }
