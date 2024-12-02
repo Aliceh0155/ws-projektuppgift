@@ -1,6 +1,8 @@
 package com.alice.wsprojektuppgift.controller;
 
 import com.alice.wsprojektuppgift.authorities.UserRole;
+import com.alice.wsprojektuppgift.config.security.CustomUserDetails;
+import com.alice.wsprojektuppgift.config.security.CustomUserDetailsService;
 import com.alice.wsprojektuppgift.config.security.JwtUtil;
 import com.alice.wsprojektuppgift.entity.CustomUser;
 import com.alice.wsprojektuppgift.model.dto.CustomUserDTO;
@@ -11,9 +13,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class UserController {
@@ -22,28 +28,34 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
+    private final CustomUserDetailsService customUserDetailsService;
+
 
     @Autowired
-    public UserController(IUserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, AuthenticationManager authenticationManager) {
+    public UserController(IUserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, AuthenticationManager authenticationManager, CustomUserDetailsService customUserDetailsService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
+        this.customUserDetailsService = customUserDetailsService;
     }
+
+
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody @Valid CustomUserDTO userDto) {
-        try {
+    public ResponseEntity<Map<String, String>> loginUser(@Valid @RequestBody CustomUserDTO userDTO) {
 
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDTO.getUsername(), userDTO.getPassword());
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
-            authenticationManager.authenticate(authenticationToken);
+        CustomUserDetails customUser = (CustomUserDetails) authentication.getPrincipal();
 
-            String token = jwtUtil.generateToken(userDto.getUsername());
-
-            return ResponseEntity.ok("Bearer " + token);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        if (customUser instanceof CustomUserDetails customUserDetails) {
+            String token = jwtUtil.generateJwtToken(customUserDetails.getUsername(), "ADMIN");
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            return ResponseEntity.ok(response);
+        }else {
+            throw new IllegalStateException("Authenticated principal is not of type CustomUserDetails");
         }
     }
 
@@ -56,32 +68,32 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody @Valid CustomUserDTO userDto) {
-//        if (userRepository.existsByUsername(userDto.getUsername())) {
-//            return ResponseEntity.badRequest().body("Username is already taken");
-//        }
         try {
+            if (userRepository.existsByUsername(userDto.getUsername())) {
+                return ResponseEntity.badRequest().body("Username is already taken");
+            }
 
+            CustomUser newUser = new CustomUser();
+            newUser.setUsername(userDto.getUsername());
+            newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            newUser.setUserRole(UserRole.USER);
+            newUser.setAccountNonExpired(true);
+            newUser.setAccountNonLocked(true);
+            newUser.setCredentialsNonExpired(true);
+            newUser.setEnabled(true);
 
-        CustomUser newUser = new CustomUser();
-        newUser.setUsername(userDto.getUsername());
-        newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        newUser.setUserRole(UserRole.USER);
-        newUser.setAccountNonExpired(true);
-        newUser.setAccountNonLocked(true);
-        newUser.setCredentialsNonExpired(true);
-        newUser.setEnabled(true);
+            userRepository.save(newUser);
 
-        userRepository.save(newUser);
-
-        return ResponseEntity.ok("User registered successfully");}
-        catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.ok("User registered successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
         }
     }
 
 
+
     @GetMapping("/createDefaultUser")
-    public CustomUser createDefaultUser(BCryptPasswordEncoder bCryptPasswordEncoder){
+    public CustomUser createDefaultUser(){
 
         CustomUser customUser = new CustomUser(
                 "Benny",
@@ -95,11 +107,6 @@ public class UserController {
         return userRepository.save(customUser);
     }
 
-    @GetMapping("/test")
-    public String test() {
-
-        return passwordEncoder.encode("123");
-    }
     @GetMapping("/adminPage")
     public String adminPage() {
 

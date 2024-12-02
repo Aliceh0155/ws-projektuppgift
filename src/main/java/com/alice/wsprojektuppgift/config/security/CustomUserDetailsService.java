@@ -14,6 +14,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final IUserRepository userRepository;
 
+
     @Autowired
     public CustomUserDetailsService(IUserRepository userRepository) {
         this.userRepository = userRepository;
@@ -28,4 +29,5 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return new CustomUserDetails(customUser);
     }
+
 }
