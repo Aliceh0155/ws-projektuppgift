@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 // @PreAuthorize
-//@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 public class CharacterController {
 
@@ -36,26 +35,18 @@ public class CharacterController {
         return ResponseEntity.ok(characters);
     }
 
-//    @GetMapping("/allCharacters")
-//    public ResponseEntity<Mono<List<CharacterModel>>> getAllCharacters() {
-//
-//        return ResponseEntity.ok(hpwebClient.get()
-//                .uri("/characters")
-//                .retrieve()
-//                .bodyToFlux(CharacterModel.class)
-//                .collectList());
-//    }
-//
-//
-//    @GetMapping("/characterByHouse/{house}")
-//    public ResponseEntity<Mono<List<CharacterModel>>> getCharacterByHouse(@PathVariable String house) {
-//
-//        return ResponseEntity.ok(hpwebClient.get()
-//                .uri("/characters/house/{house}", house)
-//                .retrieve()
-//                .bodyToFlux(CharacterModel.class)
-//                .collectList());
-//    }
+    @GetMapping("/character/{id}")
+    public ResponseEntity<CharacterModel> getCharacterById(@PathVariable String id) {
+
+        CharacterModel character = characterApiService.getOneCharacterById(id);
+
+        if (character != null) {
+            return ResponseEntity.ok(character);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 
     @PostMapping("/addCharacter")
