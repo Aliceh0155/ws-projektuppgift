@@ -13,110 +13,114 @@ import java.util.List;
 @Document(collection = "users")
 public class CustomUser {
 
-    @Id
-    private String mongoId;
+  @Id
+  private String mongoId;
 
-    private String username;
+  private String username;
 
-    private String password;
+  private String password;
 
-    private UserRole userRole;
-    private boolean isAccountNonExpired;
-    private boolean isAccountNonLocked;
-    private boolean isCredentialsNonExpired;
-    private boolean isEnabled;
-
-    // Lista av favoritkaraktärer (referenser till FavouriteCharacterEntity)
-    @DBRef
-    private List<FavouriteCharacterEntity> favouriteCharacters = new ArrayList<>();
-
-    public CustomUser() {
-    }
-
-    public CustomUser(String username, String password, UserRole userRole, boolean isAccountNonExpired, boolean isAccountNonLocked, boolean isCredentialsNonExpired, boolean isEnabled) {
-        this.username = username;
-        this.password = password;
-        this.userRole = userRole;
-        this.isAccountNonExpired = isAccountNonExpired;
-        this.isAccountNonLocked = isAccountNonLocked;
-        this.isCredentialsNonExpired = isCredentialsNonExpired;
-        this.isEnabled = isEnabled;
-    }
-
-    public String getMongoId() {
-        return mongoId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    //["ROLE_ADMIN","GET","POST"]
-    @JsonIgnore
-    public List<SimpleGrantedAuthority>  getAuthorities(){
-     return userRole.getAuthorities();
-    }
-    //["GET","POST"]
-    @JsonIgnore
-    public List<String> getListOfPermissions(){
-        return userRole.getPermission();
-    }
+  private UserRole userRole;
+  private boolean isAccountNonExpired;
+  private boolean isAccountNonLocked;
+  private boolean isCredentialsNonExpired;
+  private boolean isEnabled;
 
 
-    public UserRole getUserRole() {
-        return userRole;
-    }
+  private List<String> favouriteCharacters = new ArrayList<>();
 
-    public void setUserRole(UserRole userRole) {
-        this.userRole = userRole;
-    }
+  public CustomUser() {
+  }
 
-    public boolean isAccountNonExpired() {
-        return isAccountNonExpired;
-    }
+  public CustomUser(String username, String password, UserRole userRole, boolean isAccountNonExpired, boolean isAccountNonLocked, boolean isCredentialsNonExpired, boolean isEnabled) {
+    this.username = username;
+    this.password = password;
+    this.userRole = userRole;
+    this.isAccountNonExpired = isAccountNonExpired;
+    this.isAccountNonLocked = isAccountNonLocked;
+    this.isCredentialsNonExpired = isCredentialsNonExpired;
+    this.isEnabled = isEnabled;
+  }
 
-    public void setAccountNonExpired(boolean accountNonExpired) {
-        isAccountNonExpired = accountNonExpired;
-    }
+  public List<String> getFavouriteCharacters() {
+    return favouriteCharacters;
+  }
 
-    public boolean isAccountNonLocked() {
-        return isAccountNonLocked;
-    }
+  public void setFavouriteCharacters(List<String> favouriteCharacters) {
+    this.favouriteCharacters = favouriteCharacters;
+  }
 
-    public void setAccountNonLocked(boolean accountNonLocked) {
-        isAccountNonLocked = accountNonLocked;
-    }
+  public String getMongoId() {
+    return mongoId;
+  }
 
-    public boolean isCredentialsNonExpired() {
-        return isCredentialsNonExpired;
-    }
+  public String getUsername() {
+    return username;
+  }
 
-    public void setCredentialsNonExpired(boolean credentialsNonExpired) {isCredentialsNonExpired = credentialsNonExpired;}
+  public void setUsername(String username) {
+    this.username = username;
+  }
 
-    public boolean isEnabled() {
-        return isEnabled;
-    }
+  public String getPassword() {
+    return password;
+  }
 
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-    public List<FavouriteCharacterEntity> getFavouriteCharacters() {
-        return favouriteCharacters;
-    }
+  //["ROLE_ADMIN","GET","POST"]
+  @JsonIgnore
+  public List<SimpleGrantedAuthority> getAuthorities() {
+    return userRole.getAuthorities();
+  }
 
-    public void setFavouriteCharacters(List<FavouriteCharacterEntity> favouriteCharacters) {
-        this.favouriteCharacters = favouriteCharacters;
-    }
+  //["GET","POST"]
+  @JsonIgnore
+  public List<String> getListOfPermissions() {
+    return userRole.getPermission();
+  }
+
+
+  public UserRole getUserRole() {
+    return userRole;
+  }
+
+  public void setUserRole(UserRole userRole) {
+    this.userRole = userRole;
+  }
+
+  public boolean isAccountNonExpired() {
+    return isAccountNonExpired;
+  }
+
+  public void setAccountNonExpired(boolean accountNonExpired) {
+    isAccountNonExpired = accountNonExpired;
+  }
+
+  public boolean isAccountNonLocked() {
+    return isAccountNonLocked;
+  }
+
+  public void setAccountNonLocked(boolean accountNonLocked) {
+    isAccountNonLocked = accountNonLocked;
+  }
+
+  public boolean isCredentialsNonExpired() {
+    return isCredentialsNonExpired;
+  }
+
+  public void setCredentialsNonExpired(boolean credentialsNonExpired) {
+    isCredentialsNonExpired = credentialsNonExpired;
+  }
+
+  public boolean isEnabled() {
+    return isEnabled;
+  }
+
+  public void setEnabled(boolean enabled) {
+    isEnabled = enabled;
+  }
+
 }

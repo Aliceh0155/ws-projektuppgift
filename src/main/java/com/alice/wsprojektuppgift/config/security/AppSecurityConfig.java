@@ -24,43 +24,50 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class AppSecurityConfig {
 
 
-    private final JwtAuthFilter jwtAuthFilter;
+  private final JwtAuthFilter jwtAuthFilter;
 
-    @Autowired
-    public AppSecurityConfig(JwtAuthFilter jwtAuthFilter) {
-        this.jwtAuthFilter = jwtAuthFilter;
-    }
+  @Autowired
+  public AppSecurityConfig(JwtAuthFilter jwtAuthFilter) {
+    this.jwtAuthFilter = jwtAuthFilter;
+  }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+  @Bean
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    return authenticationConfiguration.getAuthenticationManager();
+  }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        http
-                .cors(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable)  // Disable CSRF for stateless API authentication
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST,"/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/register").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/login").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/", "/login").permitAll()
-                        .requestMatchers("/allCharacters").permitAll()
-                        .requestMatchers("/adminPage").hasRole(UserRole.ADMIN.name())
-                        .requestMatchers(HttpMethod.GET,"/createDefaultUser").permitAll()
-                        .anyRequest()
-                        .authenticated()
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+            .cors(Customizer.withDefaults())
+            .csrf(AbstractHttpConfigurer::disable)  // Disable CSRF for stateless API authentication
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers(HttpMethod.GET, "/addCharacter").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/addCharacter").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/character/").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/character/").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/saveCharactersToDatabase").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/saveCharactersToDatabase").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/register").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/register").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/login").permitAll()
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                    .requestMatchers("/", "/login").permitAll()
+                    .requestMatchers("/getAllCharactersFromDatabase").permitAll()
+                    .requestMatchers("/saveCharactersToDatabase").permitAll()
+                    .requestMatchers("/adminPage").hasRole(UserRole.ADMIN.name())
+                    .requestMatchers(HttpMethod.GET, "/createDefaultUser").permitAll()
+                    .anyRequest()
+                    .authenticated()
+            )
+            .sessionManagement(session -> session
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
 
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+    return http.build();
+  }
 
 //    //Debug user
 //    @Bean

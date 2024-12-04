@@ -18,11 +18,19 @@ public class CharacterApiService {
     this.restTemplate = restTemplate;
   }
 
-  // Hämta alla karaktärer från det externa API:et
+  // Hämta alla karaktärer från api
   public List<CharacterModel> getAllCharacters() {
     String url = "https://hp-api.herokuapp.com/api/characters";
     CharacterModel[] characters = restTemplate.getForObject(url, CharacterModel[].class);
     return Arrays.asList(characters);
+  }
+
+  // Hämta de första 100 karaktärerna
+  public List<CharacterModel> getFirst100Characters() {
+    List<CharacterModel> allCharacters = getAllCharacters();
+    return allCharacters.stream()
+            .limit(100)
+            .toList();
   }
 
   // Hämta karaktärer efter hus
