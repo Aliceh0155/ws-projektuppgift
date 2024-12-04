@@ -5,32 +5,36 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecureDigestAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 @Component
 public class JwtUtil {
-    private final String base64EncodedSecretKey = "U2VjdXJlQXBpX1NlY3JldEtleV9mb3JfSFMyNTYwX3NlY3JldF9wcm9qZWN0X2tleV9leGFtcGxl";  // Replace this with your actual base64 encoded secret key
-    byte[] keyBytes = Base64.getDecoder().decode(base64EncodedSecretKey);
 
-    SecretKey key = Keys.hmacShaKeyFor(keyBytes);  // This ensures the key is properly named and sized
+    private final SecretKey key;
 
-    // JWT expiration time (1 hour in milliseconds)
+    public JwtUtil(@Value("${jwt.secret}") String secret){
+        this.key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret));
+        System.out.println(secret);
+    }
+
+
+
+    // JWT expiration time 1 hour
     private final int jwtExpirationMs = (int) TimeUnit.HOURS.toMillis(1);
 
     public String generateJwtToken(String username, String role) {
         return Jwts.builder()
-                // TODO - Is the username unique?
-                .subject(username)  // Set the subject, often the username or user ID
+                .subject(username)
                 .claim("role", role)
-                .issuedAt(new Date())  // Set issued date
-                .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs))  // Set expiration date
-                .signWith(key)  // Use the key created for HMAC
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .signWith(key)
                 .compact();
     }
 
@@ -57,16 +61,15 @@ public class JwtUtil {
 
     public boolean validateJwtToken(String authToken) {
         try {
-            Jwts.parser()  // Use parserBuilder() instead of deprecated parser()
-                    .verifyWith(key)  // Provide the signing key for validation
-                    .build()  // Build the JwtParser
-                    .parseSignedClaims(authToken);  // Parse and verify the JWT
-            return true;  // If no exception is thrown, the token is valid
+            Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(authToken);
+            return true;
         } catch (Exception e) {
-            // Log token validation errors (like expiration, malformed, etc.)
             System.err.println("Invalid JWT token: " + e.getMessage());
         }
-        return false;  // If an exception is thrown, the token is invalid
+        return false;
     }
 
 }

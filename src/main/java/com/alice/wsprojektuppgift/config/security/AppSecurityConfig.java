@@ -54,6 +54,7 @@ public class AppSecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/login").permitAll()
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .requestMatchers("/", "/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/login").permitAll()
                     .requestMatchers("/getAllCharactersFromDatabase").permitAll()
                     .requestMatchers("/saveCharactersToDatabase").authenticated()
                     .requestMatchers("/getFavouriteCharacters").authenticated()

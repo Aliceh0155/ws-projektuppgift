@@ -49,7 +49,7 @@ public class UserController {
       String token = jwtUtil.generateJwtToken(customUserDetails.getUsername(), "ADMIN");
       return ResponseEntity.ok(token);
     } else {
-      throw new IllegalStateException("Authenticated principal is not of type CustomUserDetails");
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
   }
 
