@@ -68,6 +68,23 @@ public class CharacterController {
   }
 
 
+  @GetMapping("/getFavouriteCharacters")
+  public ResponseEntity<List<String>> getUserFavorites() {
+    // Hämta inloggad användare från JWT-token
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String username = authentication.getName(); // Användarnamn från token
+
+    // Hämta användaren från databasen
+    Optional<CustomUser> userOpt = userRepository.findByUsername(username);
+    if (userOpt.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Om användaren inte finns
+    }
+
+    CustomUser user = userOpt.get();
+    // Returnera listan av favoritkaraktärers ID
+    return ResponseEntity.ok(user.getFavouriteCharacters());
+  }
+
   @GetMapping("/allCharacters")
   public ResponseEntity<List<CharacterModel>> getAllCharacters() {
     List<CharacterModel> characters = characterApiService.getAllCharacters();
