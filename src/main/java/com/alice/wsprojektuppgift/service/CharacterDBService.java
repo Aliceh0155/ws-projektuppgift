@@ -26,7 +26,7 @@ public class CharacterDBService {
     this.characterApiService = characterApiService;
   }
 
-
+  //Lägg till 100 karaktärer i databasen
   public void charactersToDatabase() {
     List<CharacterModel> characters = characterApiService.getFirst100Characters();
     List<FavouriteCharacterEntity> favouriteCharacters = characters.stream()
@@ -37,16 +37,14 @@ public class CharacterDBService {
 
   }
 
-
+  //Omvandla model till databasentitet
   private FavouriteCharacterEntity convertToFavouriteCharacterEntity(CharacterModel character) {
-    // Omvandla Wand från CharacterModel till WandEntity
     WandEntity wandEntity = new WandEntity(
             character.getWand().getWood(),
             character.getWand().getCore(),
             character.getWand().getLength()
     );
 
-    // Skapa och returnera FavouriteCharacterEntity
     return new FavouriteCharacterEntity(
             character.getId(),
             character.getName(),
@@ -66,6 +64,7 @@ public class CharacterDBService {
     );
   }
 
+  //Uppdatera bild för karaktär
   public FavouriteCharacterEntity updateImage(String id, String newImage) {
     FavouriteCharacterEntity character = favouriteCharacterRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("Character with id " + id + " not found"));
@@ -74,7 +73,7 @@ public class CharacterDBService {
     return favouriteCharacterRepository.save(character);
   }
 
-
+  //Ta bort en karaktär
   public FavouriteCharacterEntity deleteCharacter(String id) {
     Optional<FavouriteCharacterEntity> character = favouriteCharacterRepository.findById(id);
     if (character.isPresent()) {
@@ -84,7 +83,7 @@ public class CharacterDBService {
     throw new NoSuchElementException("Character with id " + id + " not found");
   }
 
-
+//Hämta alla karaktärer från databasen
   public List<FavouriteCharacterEntity> getAllCharacters() {
 
     return favouriteCharacterRepository.findAll();

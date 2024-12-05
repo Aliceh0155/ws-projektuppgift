@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-//Vår nya user
 public class CustomUserDetails implements UserDetails {
 
     private final String username;
@@ -27,7 +26,6 @@ public class CustomUserDetails implements UserDetails {
         this.isEnabled = enabled;
     }
 
-    //Constructor Casting
     public CustomUserDetails(CustomUser customUser) {
         this.username = customUser.getUsername();
         this.password = customUser.getPassword();
