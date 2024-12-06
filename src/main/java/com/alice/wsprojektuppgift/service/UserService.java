@@ -15,6 +15,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 @Service
 public class UserService {
 
@@ -33,6 +37,33 @@ public class UserService {
     this.customUserDetailsService = customUserDetailsService;
   }
 
+  public String addFavoriteCharacterToUser(String username, String characterId) {
+    Optional<CustomUser> userOpt = userRepository.findByUsername(username);
+    if (userOpt.isEmpty()) {
+      return "User not found";
+    }
+
+    CustomUser user = userOpt.get();
+    List<String> favoriteCharacterIds = user.getFavouriteCharacters();
+
+    if (!favoriteCharacterIds.contains(characterId)) {
+      favoriteCharacterIds.add(characterId);
+      user.setFavouriteCharacters(favoriteCharacterIds);
+      userRepository.save(user);
+      return "Character ID added to favorites";
+    }
+
+    return "Character ID already in favorites";
+  }
+
+  public List<String> getUserFavorites(String username) {
+    Optional<CustomUser> userOpt = userRepository.findByUsername(username);
+    if (userOpt.isEmpty()) {
+      throw new NoSuchElementException("User not found");
+    }
+    CustomUser user = userOpt.get();
+    return user.getFavouriteCharacters();
+  }
 
   public String registerUser(CustomUserLoginDTO userDto) {
     if (userRepository.existsByUsername(userDto.getUsername())) {

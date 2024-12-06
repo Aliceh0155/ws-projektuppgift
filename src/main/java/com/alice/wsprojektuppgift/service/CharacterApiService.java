@@ -46,9 +46,8 @@ public class CharacterApiService {
     CharacterModel[] character = restTemplate.getForObject(url, CharacterModel[].class, id);
     if (character != null && character.length > 0) {
       return character[0];
-    } else {
-      return null;
     }
+    return null;
   }
 
 }

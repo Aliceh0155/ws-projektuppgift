@@ -10,8 +10,6 @@ public class AppPasswordConfig {
 
     @Bean
     public PasswordEncoder bcryptPasswordEncoder() {
-        System.out.println("TEST");
-        System.out.println("JAG ÄR BEANEN");
         return new BCryptPasswordEncoder(15);
     }
 }

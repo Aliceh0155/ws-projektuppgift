@@ -40,26 +40,13 @@ public class AppSecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
             .cors(Customizer.withDefaults())
-            .csrf(AbstractHttpConfigurer::disable)  // Disable CSRF for stateless API authentication
+            .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(HttpMethod.GET, "/addCharacter").authenticated()
-                    .requestMatchers(HttpMethod.POST, "/addCharacter").authenticated()
-                    .requestMatchers(HttpMethod.GET, "/character/").authenticated()
-                    .requestMatchers(HttpMethod.POST, "/character/").authenticated()
-                    .requestMatchers(HttpMethod.GET, "/saveCharactersToDatabase").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/saveCharactersToDatabase").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/register").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/register").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/login").permitAll()
-                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    .requestMatchers("/", "/login").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                    .requestMatchers("/getAllCharactersFromDatabase").permitAll()
-                    .requestMatchers("/saveCharactersToDatabase").authenticated()
-                    .requestMatchers("/getFavouriteCharacters").authenticated()
-                    .requestMatchers("/adminPage").hasRole(UserRole.ADMIN.name())
-                    .requestMatchers(HttpMethod.GET, "/createDefaultUser").permitAll()
+                    .requestMatchers(HttpMethod.GET,"/getAllCharactersFromDatabase","allCharactersFromApi","/characterByHouse/").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/","/login","/register").permitAll()
+                    .requestMatchers(HttpMethod.GET,"/getFavouriteCharacters","/character/").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/addFavoriteCharacterToDatabase/").authenticated()
+                    .requestMatchers("/createDefaultUser","/adminPage","/saveCharactersToDatabase","/updateImage/","/deleteCharacter/").hasRole(UserRole.ADMIN.name())
                     .anyRequest()
                     .authenticated()
             )
@@ -71,15 +58,4 @@ public class AppSecurityConfig {
     return http.build();
   }
 
-//    //Debug user
-//    @Bean
-//    public UserDetailsService userDetailsService (PasswordEncoder bcryptPasswordEncoder) {
-//        UserDetails user =
-//                User.builder()
-//                        .username("Alice")
-//                        .password(bcryptPasswordEncoder.encode("123"))
-//                        .authorities(UserRole.USER.getAuthorities())
-//                        .build();
-//        return new InMemoryUserDetailsManager(user);
-//    }
 }

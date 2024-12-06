@@ -31,61 +31,16 @@ public class CharacterController {
   private final CharacterApiService characterApiService;
   private final CharacterDBService characterDBService;
   private final IUserRepository userRepository;
-  private final JwtUtil jwtUtil;
 
 
   @Autowired
-  public CharacterController(CharacterApiService characterApiService, CharacterDBService characterDBService, IUserRepository userRepository, JwtUtil jwtUtil) {
+  public CharacterController(CharacterApiService characterApiService, CharacterDBService characterDBService, IUserRepository userRepository) {
     this.characterApiService = characterApiService;
     this.characterDBService = characterDBService;
     this.userRepository = userRepository;
-    this.jwtUtil = jwtUtil;
   }
 
-  @PostMapping("/addFavoriteCharacterToDatabase/{characterId}")
-  public ResponseEntity<String> addFavoriteCharacter(@PathVariable String characterId) {
-    // Hämta användaren baserat på JWT-token
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    String username = authentication.getName(); // Hämta användarnamnet från token
-
-    Optional<CustomUser> userOpt = userRepository.findByUsername(username);
-    if (userOpt.isEmpty()) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-    }
-
-    CustomUser user = userOpt.get();
-
-    List<String> favouriteCharacterId = user.getFavouriteCharacters();
-
-    if (!favouriteCharacterId.contains(characterId)) {
-      favouriteCharacterId.add(characterId);
-      user.setFavouriteCharacters(favouriteCharacterId);
-      userRepository.save(user);
-      return ResponseEntity.ok("Character ID added to favorites");
-    }
-
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Character ID already in favorites");
-  }
-
-
-  @GetMapping("/getFavouriteCharacters")
-  public ResponseEntity<List<String>> getUserFavorites() {
-    // Hämta inloggad användare från JWT-token
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    String username = authentication.getName(); // Användarnamn från token
-
-    // Hämta användaren från databasen
-    Optional<CustomUser> userOpt = userRepository.findByUsername(username);
-    if (userOpt.isEmpty()) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Om användaren inte finns
-    }
-
-    CustomUser user = userOpt.get();
-    // Returnera listan av favoritkaraktärers ID
-    return ResponseEntity.ok(user.getFavouriteCharacters());
-  }
-
-  @GetMapping("/allCharacters")
+  @GetMapping("/allCharactersFromApi")
   public ResponseEntity<List<CharacterModel>> getAllCharacters() {
     List<CharacterModel> characters = characterApiService.getAllCharacters();
     return ResponseEntity.ok(characters);
@@ -109,12 +64,6 @@ public class CharacterController {
     }
   }
 
-
-//    @PostMapping("/addCharacter")
-//    public ResponseEntity<FavouriteCharacterEntity> addCharacter(@RequestBody FavouriteCharacterEntity favouriteCharacterEntity) {
-//        FavouriteCharacterEntity savedCharacter = characterDBService.addCharacter(favouriteCharacterEntity);
-//        return ResponseEntity.status(200).body(savedCharacter);
-//    }
 
   @PostMapping("/saveCharactersToDatabase")
   public ResponseEntity<String> saveFirst100Characters() {
@@ -152,6 +101,4 @@ public class CharacterController {
     }
     return ResponseEntity.ok(favourites);
   }
-
-
 }

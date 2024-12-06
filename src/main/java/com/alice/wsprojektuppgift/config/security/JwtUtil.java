@@ -20,7 +20,6 @@ public class JwtUtil {
 
     public JwtUtil(@Value("${jwt.secret}") String secret){
         this.key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret));
-        System.out.println(secret);
     }
 
 
