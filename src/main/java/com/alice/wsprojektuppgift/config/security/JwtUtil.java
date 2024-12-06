@@ -2,9 +2,7 @@ package com.alice.wsprojektuppgift.config.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SecureDigestAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -16,59 +14,57 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class JwtUtil {
 
-    private final SecretKey key;
+  private final SecretKey key;
 
-    public JwtUtil(@Value("${jwt.secret}") String secret){
-        this.key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret));
+  public JwtUtil(@Value("${jwt.secret}") String secret) {
+    this.key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret));
+  }
+
+  // JWT expiration time 1 hour
+  private final int jwtExpirationMs = (int) TimeUnit.HOURS.toMillis(1);
+
+  public String generateJwtToken(String username, String role) {
+    return Jwts.builder()
+            .subject(username)
+            .claim("role", role)
+            .issuedAt(new Date())
+            .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+            .signWith(key)
+            .compact();
+  }
+
+  public String getUsernameFromJwtToken(String token) {
+    Claims claims = Jwts.parser()
+            .verifyWith(key)
+            .build()
+            .parseSignedClaims(token)
+            .getPayload();
+
+    return claims.getSubject();
+  }
+
+  public String getRoleFromJwtToken(String token) {
+    Claims claims = Jwts.parser()
+            .verifyWith(key)
+            .build()
+            .parseSignedClaims(token)
+            .getPayload();
+
+
+    return claims.get("role", String.class);
+  }
+
+  public boolean validateJwtToken(String authToken) {
+    try {
+      Jwts.parser()
+              .verifyWith(key)
+              .build()
+              .parseSignedClaims(authToken);
+      return true;
+    } catch (Exception e) {
+      System.err.println("Invalid JWT token: " + e.getMessage());
     }
-
-
-
-    // JWT expiration time 1 hour
-    private final int jwtExpirationMs = (int) TimeUnit.HOURS.toMillis(1);
-
-    public String generateJwtToken(String username, String role) {
-        return Jwts.builder()
-                .subject(username)
-                .claim("role", role)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(key)
-                .compact();
-    }
-
-    public String getUsernameFromJwtToken(String token) {
-        Claims claims = Jwts.parser()
-                .verifyWith(key)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-
-        return claims.getSubject();
-    }
-
-    public String getRoleFromJwtToken(String token) {
-        Claims claims = Jwts.parser()
-                .verifyWith(key)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-
-
-        return claims.get("role", String.class);  // Extract the role from the claims
-    }
-
-    public boolean validateJwtToken(String authToken) {
-        try {
-            Jwts.parser()
-                    .verifyWith(key)
-                    .build()
-                    .parseSignedClaims(authToken);
-            return true;
-        } catch (Exception e) {
-            System.err.println("Invalid JWT token: " + e.getMessage());
-        }
-        return false;
-    }
+    return false;
+  }
 
 }

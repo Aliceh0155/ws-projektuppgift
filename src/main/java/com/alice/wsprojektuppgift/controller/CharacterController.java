@@ -1,43 +1,27 @@
 package com.alice.wsprojektuppgift.controller;
 
-import com.alice.wsprojektuppgift.config.security.CustomUserDetails;
-import com.alice.wsprojektuppgift.config.security.JwtUtil;
-import com.alice.wsprojektuppgift.entity.CustomUser;
 import com.alice.wsprojektuppgift.entity.FavouriteCharacterEntity;
 import com.alice.wsprojektuppgift.model.CharacterModel;
-import com.alice.wsprojektuppgift.model.dto.CustomUserDTO;
-import com.alice.wsprojektuppgift.model.dto.CustomUserLoginDTO;
-import com.alice.wsprojektuppgift.repository.IUserRepository;
 import com.alice.wsprojektuppgift.service.CharacterApiService;
 import com.alice.wsprojektuppgift.service.CharacterDBService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
-// @PreAuthorize
 @RestController
 public class CharacterController {
 
 
   private final CharacterApiService characterApiService;
   private final CharacterDBService characterDBService;
-  private final IUserRepository userRepository;
 
 
   @Autowired
-  public CharacterController(CharacterApiService characterApiService, CharacterDBService characterDBService, IUserRepository userRepository) {
+  public CharacterController(CharacterApiService characterApiService, CharacterDBService characterDBService) {
     this.characterApiService = characterApiService;
     this.characterDBService = characterDBService;
-    this.userRepository = userRepository;
   }
 
   @GetMapping("/allCharactersFromApi")

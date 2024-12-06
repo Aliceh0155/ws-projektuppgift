@@ -8,9 +8,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class FavouriteCharacterEntity {
 
   @Id
-  private String mongoId; // MongoDB:s unika ID
+  private String mongoId; // MongoDB ID
 
-  private String apiId; // ID från API:et
+  private String apiId; // API ID
   private String name;
   private String species;
   private String gender;

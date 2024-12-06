@@ -82,7 +82,7 @@ public class CharacterDBService {
     throw new NoSuchElementException("Character with id " + id + " not found");
   }
 
-//Hämta alla karaktärer från databasen
+  //Hämta alla karaktärer från databasen
   public List<FavouriteCharacterEntity> getAllCharacters() {
 
     return favouriteCharacterRepository.findAll();

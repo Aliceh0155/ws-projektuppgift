@@ -1,10 +1,7 @@
 package com.alice.wsprojektuppgift;
 
 import com.alice.wsprojektuppgift.entity.FavouriteCharacterEntity;
-import com.alice.wsprojektuppgift.model.CharacterModel;
-import com.alice.wsprojektuppgift.model.Wand;
 import com.alice.wsprojektuppgift.repository.IFavouriteCharacterRepository;
-import com.alice.wsprojektuppgift.service.CharacterApiService;
 import com.alice.wsprojektuppgift.service.CharacterDBService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,11 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.NoSuchElementException;
 import java.util.Optional;
-
-import static org.hamcrest.Matchers.any;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

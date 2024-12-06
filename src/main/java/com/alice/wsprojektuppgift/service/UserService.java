@@ -1,17 +1,10 @@
 package com.alice.wsprojektuppgift.service;
 
 import com.alice.wsprojektuppgift.authorities.UserRole;
-import com.alice.wsprojektuppgift.config.security.CustomUserDetails;
-import com.alice.wsprojektuppgift.config.security.CustomUserDetailsService;
-import com.alice.wsprojektuppgift.config.security.JwtUtil;
 import com.alice.wsprojektuppgift.entity.CustomUser;
 import com.alice.wsprojektuppgift.model.dto.CustomUserLoginDTO;
 import com.alice.wsprojektuppgift.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,17 +17,11 @@ public class UserService {
 
   private final IUserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
-  private final JwtUtil jwtUtil;
-  private final AuthenticationManager authenticationManager;
-  private final CustomUserDetailsService customUserDetailsService;
 
   @Autowired
-  public UserService(IUserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, AuthenticationManager authenticationManager, CustomUserDetailsService customUserDetailsService) {
+  public UserService(IUserRepository userRepository, PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
-    this.jwtUtil = jwtUtil;
-    this.authenticationManager = authenticationManager;
-    this.customUserDetailsService = customUserDetailsService;
   }
 
   public String addFavoriteCharacterToUser(String username, String characterId) {

@@ -16,9 +16,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
-
-import static org.springframework.security.config.Customizer.withDefaults;
-
 @Configuration
 @EnableWebSecurity
 public class AppSecurityConfig {
@@ -28,6 +25,7 @@ public class AppSecurityConfig {
 
   @Autowired
   public AppSecurityConfig(JwtAuthFilter jwtAuthFilter) {
+
     this.jwtAuthFilter = jwtAuthFilter;
   }
 
